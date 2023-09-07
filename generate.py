@@ -24,7 +24,7 @@ def create_string_of_words(words, target_length=35):
 
 def text_to_image(text, width=1050, height=600):
     # Choose a font and size
-    font_size = 18
+    font_size = 40
     font_path = "FreeMono.ttf"  # Update the path to your font file
     font = ImageFont.truetype(font_path, size=font_size)
 
@@ -115,8 +115,11 @@ def download():
     text_content = '\n'.join(lines)
     img_buffer = text_to_image(text_content)
     
-    # Return the image as a download
-    return send_file(img_buffer, mimetype='image/png', as_attachment=True, download_name='text_block.png')
+    # Set the file name as the seed value
+    file_name = f"{seed_value}.png"
+    
+    # Return the image as a download with the specified file name
+    return send_file(img_buffer, mimetype='image/png', as_attachment=True, download_name=file_name)
 
 if __name__ == '__main__':
     app.run(debug=True)
