@@ -108,8 +108,9 @@ def download():
             line = create_string_of_words(words)
         lines.append(f"{i} {line}")
 
-    seed_line = f"{seed_value}"
-    lines.append(seed_line)
+    # Removed now that the file name is the seen number to make it cleaner for printing.   
+#    seed_line = f"{seed_value}"
+#    lines.append(seed_line)
     
     # Convert the text to an image
     text_content = '\n'.join(lines)
