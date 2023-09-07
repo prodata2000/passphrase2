@@ -24,7 +24,7 @@ def create_string_of_words(words, target_length=35):
 
 def text_to_image(text, width=1050, height=600):
     # Choose a font and size
-    font_size = 14
+    font_size = 18
     font_path = "FreeMono.ttf"  # Update the path to your font file
     font = ImageFont.truetype(font_path, size=font_size)
 
