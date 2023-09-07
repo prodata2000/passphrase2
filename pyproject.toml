@@ -8,6 +8,7 @@ authors = ["Your Name <you@example.com>"]
 python = "^3.10"
 Flask = "^2.3.3"
 Pillow = "^10.0.0"
+gunicorn = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 
