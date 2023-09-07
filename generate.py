@@ -4,7 +4,6 @@ import random
 import flask
 from PIL import Image, ImageDraw, ImageFont
 
-
 def load_words_from_file(filename):
     """Load words from a file and return them as a list."""
     with open(filename, 'r') as f:
@@ -23,7 +22,6 @@ def create_string_of_words(words, target_length=35):
                 break
     return line.strip()
 
-
 def text_to_image(text, width=1050, height=600, line_spacing=10):
     # Choose a font and size
     font_size = 46
@@ -38,10 +36,10 @@ def text_to_image(text, width=1050, height=600, line_spacing=10):
     lines = text.split('\n')
 
     # Calculate the total height of the text content
-    total_text_height = sum(font.getsize(line)[1] for line in lines) + (len(lines) - 1) * line_spacing
+    total_text_height = sum(font.getbbox(line)[3] - font.getbbox(line)[1] for line in lines) + (len(lines) - 1) * line_spacing
 
     # Calculate the vertical position for centering the text
-    y_text = (height - total_text_height) // 2
+    y_text = (height - total_text_height) // 3 - font.getbbox(lines[0])[1]  # Adjusted position
 
     # Insert each line onto the image
     for line in lines:
@@ -56,9 +54,7 @@ def text_to_image(text, width=1050, height=600, line_spacing=10):
     buffer.seek(0)
     return buffer
 
-
 app = flask.Flask(__name__)
-
 
 @app.route('/')
 def index():
