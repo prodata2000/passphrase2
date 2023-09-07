@@ -1,19 +1,20 @@
-from flask import Flask, render_template, Response, send_file, request, redirect, url_for
-from PIL import Image, ImageDraw, ImageFont
 import io
 import random
-import string
-#... [Your functions here] ...
+
+import flask
+from PIL import Image, ImageDraw, ImageFont
+
 
 def load_words_from_file(filename):
     """Load words from a file and return them as a list."""
     with open(filename, 'r') as f:
         return [word.strip() for word in f.read().split(',')]
 
+
 def create_string_of_words(words, target_length=35):
     filtered_words = [word for word in words if not (any(char.isdigit() for char in word) or '.' in word)]
     random.shuffle(filtered_words)
-    
+
     line = ""
     for word in filtered_words:
         if len(line) + len(word) + 1 <= target_length:
@@ -21,6 +22,7 @@ def create_string_of_words(words, target_length=35):
             if len(line) >= target_length:
                 break
     return line.strip()
+
 
 def text_to_image(text, width=1050, height=600, line_spacing=10):
     # Choose a font and size
@@ -54,30 +56,33 @@ def text_to_image(text, width=1050, height=600, line_spacing=10):
     buffer.seek(0)
     return buffer
 
-app = Flask(__name__)
+
+app = flask.Flask(__name__)
+
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return flask.render_template('index.html')
+
 
 @app.route('/generate', methods=['GET', 'POST'])
 def generate():
-    if request.method == 'POST':
-        seed_value = request.form.get('seed')
-        
+    if flask.request.method == 'POST':
+        seed_value = flask.request.form.get('seed')
+
         # Check if the seed is provided and is a valid number. 
         # If not, generate a random seed.
         try:
             seed_value = int(seed_value)
         except (ValueError, TypeError):
-            seed_value = random.randint(0, 1e6)
-        
+            seed_value = random.randint(0, 99999999999)
+
         # After processing and generating text block, 
         # redirect back to the GET route with seed_value as a parameter.
-        return redirect(url_for('generate', seed=seed_value))
-    
+        return flask.redirect(flask.url_for('generate', seed=seed_value))
+
     else:  # Handle GET requests
-        seed_value = request.args.get('seed', default=random.randint(0, 1e6), type=int)
+        seed_value = flask.request.args.get('seed', default=random.randint(0, 9999999999), type=int)
         random.seed(seed_value)
 
         words = load_words_from_file('output.txt')
@@ -93,11 +98,12 @@ def generate():
         lines.append(seed_line)
 
         text_block = '\n'.join(lines)
-        return render_template('index.html', text_block=text_block, seed=seed_value)
+        return flask.render_template('index.html', text_block=text_block, seed=seed_value)
+
 
 @app.route('/download')
 def download():
-    seed_value = request.args.get('seed', default=random.randint(0, 1e6), type=int)
+    seed_value = flask.request.args.get('seed', default=random.randint(0, 99999999999), type=int)
     random.seed(seed_value)
 
     words = load_words_from_file('output.txt')
@@ -110,19 +116,19 @@ def download():
         lines.append(f"{i} {line}")
 
     # Removed now that the file name is the seen number to make it cleaner for printing.   
-#    seed_line = f"{seed_value}"
-#    lines.append(seed_line)
-    
+    #    seed_line = f"{seed_value}"
+    #    lines.append(seed_line)
+
     # Convert the text to an image
     text_content = '\n'.join(lines)
     img_buffer = text_to_image(text_content)
-    
+
     # Set the file name as the seed value
     file_name = f"{seed_value}.png"
-    
+
     # Return the image as a download with the specified file name
-    return send_file(img_buffer, mimetype='image/png', as_attachment=True, download_name=file_name)
+    return flask.send_file(img_buffer, mimetype='image/png', as_attachment=True, download_name=file_name)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
-
