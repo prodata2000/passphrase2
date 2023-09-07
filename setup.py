@@ -8,11 +8,10 @@ setup(
     install_requires=[
         "Flask",
         "Pillow"
-        "gunicorn"
     ],
     entry_points={
         'console_scripts': [
-            'flaskapp=wsgi.py:app.run'
+            'flaskapp=generator.py:app.run'
         ]
     }
 )
