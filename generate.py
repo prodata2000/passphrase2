@@ -22,28 +22,30 @@ def create_string_of_words(words, target_length=35):
                 break
     return line.strip()
 
-def text_to_image(text):
+def text_to_image(text, width=1050, height=600):
     # Choose a font and size
-    font = ImageFont.truetype("FreeMono.ttf", size=12)
+    font_size = 14
+    font_path = "FreeMono.ttf"  # Update the path to your font file
+    font = ImageFont.truetype(font_path, size=font_size)
+
+    # Create a blank white image with the specified width and height
+    img = Image.new('RGB', (width, height), color='white')
+    d = ImageDraw.Draw(img)
 
     # Split the text into lines and measure each line
     lines = text.split('\n')
-    line_widths = [font.getsize(line)[0] for line in lines]
-    line_heights = [font.getsize(line)[1] for line in lines]
+    line_height = font.getsize('H')[1]  # Get the height of a typical character ('H')
 
-    # Calculate the total width and height for the image
-    img_width = max(line_widths) + 20  # Adding some padding
-    img_height = sum(line_heights) + (len(lines) * 5) + 15  # Adding space between lines and some padding
-
-    # Create a blank white image
-    img = Image.new('RGB', (img_width, img_height), color='white')
-    d = ImageDraw.Draw(img)
+    # Calculate the vertical position for centering the text
+    total_text_height = len(lines) * line_height
+    y_text = (height - total_text_height) // 2
 
     # Insert each line onto the image
-    y_text = 5
     for line in lines:
-        d.text((10, y_text), line, fill='black', font=font)
-        y_text += font.getsize(line)[1] + 5  # Move to the next line position
+        text_width, text_height = d.textsize(line, font=font)
+        x_text = (width - text_width) // 2  # Calculate the horizontal position for centering
+        d.text((x_text, y_text), line, fill='black', font=font)
+        y_text += line_height  # Move to the next line position
 
     # Save the image to a bytes buffer
     buffer = io.BytesIO()
