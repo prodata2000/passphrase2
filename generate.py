@@ -22,9 +22,9 @@ def create_string_of_words(words, target_length=35):
                 break
     return line.strip()
 
-def text_to_image(text, width=1050, height=600):
+def text_to_image(text, width=1050, height=600, line_spacing=10):
     # Choose a font and size
-    font_size = 40
+    font_size = 45
     font_path = "FreeMono.ttf"  # Update the path to your font file
     font = ImageFont.truetype(font_path, size=font_size)
 
@@ -45,7 +45,7 @@ def text_to_image(text, width=1050, height=600):
         text_width, text_height = d.textsize(line, font=font)
         x_text = (width - text_width) // 2  # Calculate the horizontal position for centering
         d.text((x_text, y_text), line, fill='black', font=font)
-        y_text += line_height  # Move to the next line position
+        y_text += line_height + line_spacing  # Move to the next line position
 
     # Save the image to a bytes buffer
     buffer = io.BytesIO()
