@@ -11,7 +11,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'flaskapp=your_module_name:app.run'
+            'flaskapp=generator.py:app.run'
         ]
     }
 )
