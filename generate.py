@@ -4,6 +4,7 @@ import random
 import flask
 from PIL import Image, ImageDraw, ImageFont
 
+
 def load_words_from_file(filename):
     """Load words from a file and return them as a list."""
     with open(filename, 'r') as f:
@@ -22,6 +23,7 @@ def create_string_of_words(words, target_length=35):
                 break
     return line.strip()
 
+
 def text_to_image(text, width=1050, height=600, line_spacing=10):
     # Choose a font and size
     font_size = 46
@@ -36,7 +38,8 @@ def text_to_image(text, width=1050, height=600, line_spacing=10):
     lines = text.split('\n')
 
     # Calculate the total height of the text content
-    total_text_height = sum(font.getbbox(line)[3] - font.getbbox(line)[1] for line in lines) + (len(lines) - 1) * line_spacing
+    total_text_height = sum(font.getbbox(line)[3] - font.getbbox(line)[1] for line in lines) + (
+                len(lines) - 1) * line_spacing
 
     # Calculate the vertical position for centering the text
     y_text = (height - total_text_height) // 3 - font.getbbox(lines[0])[1]  # Adjusted position
@@ -54,7 +57,9 @@ def text_to_image(text, width=1050, height=600, line_spacing=10):
     buffer.seek(0)
     return buffer
 
+
 app = flask.Flask(__name__)
+
 
 @app.route('/')
 def index():
@@ -65,20 +70,23 @@ def index():
 def generate():
     if flask.request.method == 'POST':
         seed_value = flask.request.form.get('seed')
+        replace_spaces = flask.request.form.get('replace_spaces') == 'true'  # Get the checkbox value
 
-        # Check if the seed is provided and is a valid number. 
+        # Check if the seed is provided and is a valid number.
         # If not, generate a random seed.
         try:
             seed_value = int(seed_value)
         except (ValueError, TypeError):
             seed_value = random.randint(0, 99999999999)
 
-        # After processing and generating text block, 
+        # After processing and generating text block,
         # redirect back to the GET route with seed_value as a parameter.
-        return flask.redirect(flask.url_for('generate', seed=seed_value))
+        return flask.redirect(flask.url_for('generate', seed=seed_value, replace_spaces=replace_spaces))
 
     else:  # Handle GET requests
         seed_value = flask.request.args.get('seed', default=random.randint(0, 9999999999), type=int)
+        replace_spaces = flask.request.args.get('replace_spaces', default=False, type=bool)
+
         random.seed(seed_value)
 
         words = load_words_from_file('output.txt')
@@ -88,6 +96,8 @@ def generate():
             line = create_string_of_words(words)
             while not (34 <= len(line) <= 35):
                 line = create_string_of_words(words)
+            if replace_spaces:
+                line = replace_spaces_with_symbols(line)  # New function to replace spaces with symbols
             lines.append(f"{i} {line}")
 
         seed_line = f"{seed_value}"
@@ -95,6 +105,12 @@ def generate():
 
         text_block = '\n'.join(lines)
         return flask.render_template('index.html', text_block=text_block, seed=seed_value)
+
+
+def replace_spaces_with_symbols(text):
+    """Replace spaces in the text with a random special symbol."""
+    symbols = "!@#$%^&*()[]{}<>"
+    return ''.join(random.choice(symbols) if char == ' ' else char for char in text)
 
 
 @app.route('/download')

@@ -9,6 +9,7 @@
 <body>
 
 <div class="container mt-5">
+    <h1 class="text-center">SparkForge Passphrase Generator</h1> <!-- Added Title -->
     <div class="card">
         <div class="card-body">
             <pre>{{ text_block }}</pre>
@@ -20,17 +21,22 @@
             <label for="seed">Seed Value - blank for a new random or enter your own number:</label>
             <input type="number" name="seed" id="seed" value="{{ seed }}" class="form-control">
         </div>
+        <!-- Added Checkbox -->
+        <div class="form-group">
+            <input type="checkbox" name="replace_spaces" id="replace_spaces" value="true">
+            <label for="replace_spaces">Replace spaces with special characters</label>
+        </div>
         <button type="submit" class="btn btn-primary">Generate</button>
     </form>
 
     <a href="/download?seed={{ seed }}" class="btn btn-secondary mt-2">Download as Image</a>
-    
+
     <div class="card mt-4">
         <div class="card-body">
-            <br>Welcome to the PassPhrase generator. The purpose of this site is to generate a card that asists with passwords that are easier to use.</br>
-            <br>For the best results pick a few words add a special character of choice between each word and finish it off with a number you will remember.</br>
-            <br>The Seed Number at the bottom is so you can make another one in the event of a loss. Its good to pick a number you will remember like an adress or phones number.</br>
-            <br>Source code available here. <a href="https://github.com/prodata2000/passphrase2"> GITHUB </a>
+            Welcome to the PassPhrase generator. The purpose of this site is to generate a card that assists with passwords that are easier to use.
+            For the best results, pick a few words, add a special character of choice between each word, and finish it off with a number you will remember.
+            The Seed Number at the bottom is so you can make another one in the event of a loss. It's good to pick a number you will remember like an address or phone number.
+            Source code available here. <a href="https://github.com/prodata2000/passphrase2"> GITHUB </a>
         </div>
     </div>
 </div>
