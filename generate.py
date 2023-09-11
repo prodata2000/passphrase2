@@ -85,7 +85,8 @@ def generate():
 
     else:  # Handle GET requests
         seed_value = flask.request.args.get('seed', default=random.randint(0, 9999999999), type=int)
-        replace_spaces = flask.request.args.get('replace_spaces', default=False, type=bool)
+        replace_spaces_str = flask.request.args.get('replace_spaces', default='false')
+        replace_spaces = replace_spaces_str.lower() == 'true'  # Convert the string to boolean
 
         random.seed(seed_value)
 
